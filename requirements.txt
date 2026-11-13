@@ -1,2 +1,12 @@
 fastapi
-uvivorn
+# uvivorn
+dotenv
+sqlalchemy[asyncio]
+asyncpg
+python-multipart
+pypdf
+sentence-transformers
+qdrant-client
+langchain-text-splitters
+fonttools
+alembic
