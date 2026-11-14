@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
 
   qdrant:
-    image: qdrant/qdrant:latest   # consider pinning, e.g. qdrant/qdrant:v1.12.4
+    image: qdrant/qdrant:latest 
     container_name: qdrant
     ports:
       - "6333:6333"
