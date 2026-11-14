@@ -1,8 +1,12 @@
 from datetime import date, time
 from typing import Literal
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from pydantic import BaseModel, EmailStr, Field
+
+
+class ConversationIdResponse(BaseModel):
+    conversation_id: UUID
 
 
 class ChatRequest(BaseModel):
@@ -26,3 +30,12 @@ class BookingDetails(BaseModel):
     email: EmailStr
     interview_date: date
     interview_time: time
+
+
+class BookingDraft(BaseModel):
+    booking_id: UUID = Field(default_factory=uuid4)
+    name: str | None = None
+    email: str | None = None
+    date: str | None = None
+    time: str | None = None
+    status: Literal["collecting", "awaiting_confirmation"] = "collecting"

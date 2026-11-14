@@ -23,6 +23,5 @@ class Settings:
     GROQ_API_KEY: str = _required_env("GROQ_API_KEY")
     GROQ_MODEL: str = _required_env("GROQ_MODEL")
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-    BUSINESS_TIMEZONE : str | None = None
 
 setting = Settings()

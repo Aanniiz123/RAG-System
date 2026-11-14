@@ -16,17 +16,10 @@ from src.scheme.chat_scheme import (
     BookingDetails,
     ChatRequest,
     ChatResponse,
+    BookingDraft,
 )
 from src.services.retrieval import QdrantRetriever
 
-
-class BookingDraft(BaseModel):
-    booking_id: UUID = Field(default_factory=uuid4)
-    name: str | None = None
-    email: str | None = None
-    date: str | None = None
-    time: str | None = None
-    status: Literal["collecting", "awaiting_confirmation"] = "collecting"
 
 
 class ChatService:
@@ -34,8 +27,8 @@ class ChatService:
         self,
         redis: Redis,
         llm: GroqLLM,
-        retriever: QdrantRetriever,
-    ) -> None:
+        retriever: QdrantRetriever) -> None:
+
         self._redis = redis
         self._llm = llm
         self._retriever = retriever
@@ -45,8 +38,8 @@ class ChatService:
     async def reply(
         self,
         request: ChatRequest,
-        db: AsyncSession,
-    ) -> ChatResponse:
+        db: AsyncSession) -> ChatResponse:
+
         conversation_id = request.conversation_id or uuid4()
         history_key = f"chat:{conversation_id}:messages"
         draft_key = f"chat:{conversation_id}:booking"
@@ -79,12 +72,8 @@ class ChatService:
 
         if extraction.intent == "booking":
             draft = draft or BookingDraft()
-            answer, status = await self._update_booking_draft(
-                draft_key, draft, extraction
-            )
-            return await self._finish(
-                history_key, conversation_id, answer, status
-            )
+            answer, status = await self._update_booking_draft(draft_key, draft, extraction)
+            return await self._finish(history_key, conversation_id, answer, status)
 
         standalone_query = await self._llm.rewrite_query(
             history,
@@ -105,7 +94,7 @@ class ChatService:
         extraction: object,
     ) -> tuple[str, Literal["collecting", "awaiting_confirmation"]]:
         values = draft.model_dump()
-        fields = extraction.model_dump(exclude={"intent"})  # type: ignore[attr-defined]
+        fields = extraction.model_dump(exclude={"intent"})
 
         for field in ("name", "email"):
             value = fields[field]
@@ -153,7 +142,7 @@ class ChatService:
             return f"I still need {needed} to continue the booking.", "collecting"
 
         interview_date = date.fromisoformat(draft.date or "")
-        today = datetime.now(ZoneInfo(setting.BUSINESS_TIMEZONE)).date()
+        today = datetime.now().date()
         if interview_date < today:
             await self._save_draft(draft_key, draft)
             return (
@@ -180,12 +169,12 @@ class ChatService:
 
         draft.status = "awaiting_confirmation"
         await self._save_draft(draft_key, draft)
+        
         return (
             f"Please confirm this interview booking: {details.name}, "
             f"{details.email}, {details.interview_date.isoformat()} at "
-            f"{details.interview_time.strftime('%H:%M')} "
-            f"({setting.BUSINESS_TIMEZONE}). Reply 'yes' to save it or 'no' "
-            "to cancel.",
+            f"{details.interview_time.strftime('%H:%M')}. "
+            "Reply 'yes' to save it or 'no' to cancel.",
             "awaiting_confirmation",
         )
 
@@ -230,7 +219,6 @@ class ChatService:
                     email=str(details.email),
                     interview_date=details.interview_date,
                     interview_time=details.interview_time,
-                    timezone=setting.BUSINESS_TIMEZONE,
                 )
             )
             await db.commit()
