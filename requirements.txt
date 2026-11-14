@@ -10,3 +10,6 @@ qdrant-client
 langchain-text-splitters
 fonttools
 alembic
+groq
+redis
+email-validator
