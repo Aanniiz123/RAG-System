@@ -1,6 +1,5 @@
 fastapi
 uvivorn
-dotenv
 sqlalchemy[asyncio]
 asyncpg
 python-multipart
@@ -13,3 +12,5 @@ alembic
 groq
 redis
 email-validator
+uvicorn[standard]
+python-dotenv
