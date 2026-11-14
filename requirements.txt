@@ -1,5 +1,5 @@
 fastapi
-# uvivorn
+uvivorn
 dotenv
 sqlalchemy[asyncio]
 asyncpg

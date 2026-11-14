@@ -16,7 +16,6 @@ class Booking(base):
     email: Mapped[str] = mapped_column(String(320))
     interview_date: Mapped[date] = mapped_column(Date)
     interview_time: Mapped[time] = mapped_column(Time)
-    timezone: Mapped[str] = mapped_column(String(64))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

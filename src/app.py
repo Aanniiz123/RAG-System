@@ -23,15 +23,14 @@ logger = logging.getLogger(__name__)
 def _load_embedder() -> SentenceTransformer:
     return SentenceTransformer(
         setting.EMBEDDING_MODEL,
-        device=setting.EMBEDDING_DEVICE,
-    )
+        device=setting.EMBEDDING_DEVICE,)
 
 
 def _ensure_collection(
     client: QdrantClient,
     name: str,
-    vector_size: int,
-) -> None:
+    vector_size: int,) -> None:
+
     if client.collection_exists(name):
         return
 
@@ -115,6 +114,7 @@ async def health_check(request: Request) -> dict[str, str]:
     try:
         await asyncio.to_thread(request.app.state.qdrant.get_collections)
         await request.app.state.redis.ping()
+        
     except (UnexpectedResponse, RedisError) as exc:
         logger.warning("Health check failed: %s", exc)
         raise HTTPException(
