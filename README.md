@@ -21,6 +21,21 @@ for LLM responses.
 - A Groq API key
 - A Groq model enabled for your account
 
+
+## There is the required step than must be taken while setup this project
+
+## Set 1 :
+   cd RAG-System
+
+## step 2:
+   python -m venv .venv
+
+## step 3:
+   .venv\Scripts\Activate.ps1
+
+## step 4:
+   pip install -r requirements.txt
+
 ## Setup with Docker Compose
 
 1. Clone this repository and open its directory.
