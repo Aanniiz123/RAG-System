@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from core.config import setting
 from src.database import base
 from src.models.document import Document
+from src.models.chat import Booking
 
 from alembic import context
 
